@@ -104,9 +104,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-//import { DynamicCardSocialPage } from '../dynamic-card-social/dynamic-card-social';
 
-//import { LinkPage } from '../link/link';
 
 var HomeNewsPage = /** @class */ (function () {
     function HomeNewsPage(events, modalCtrl, platform, inAppBrowser, newsService) {
@@ -132,8 +130,6 @@ var HomeNewsPage = /** @class */ (function () {
         var _this = this;
         var linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPublic;
         this.getPublicNews(linkPublicNews);
-        //let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPrivate;
-        //this.getPrivateNews(linkNews, true);
         this.events.subscribe('event-main-login-checked', (function (data) {
             _this.userInfo = data.user;
             console.log('UserInfo: ', _this.userInfo);

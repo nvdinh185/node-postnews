@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { Events, ModalController, Platform } from 'ionic-angular';
 import { PostNewsPage } from '../post-news/post-news';
-//import { DynamicCardSocialPage } from '../dynamic-card-social/dynamic-card-social';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-//import { LinkPage } from '../link/link';
 import { NewsService } from '../../services/NewService';
 
 @Component({
@@ -29,8 +27,6 @@ export class HomeNewsPage {
   ngOnInit() {
     let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPublic;
     this.getPublicNews(linkPublicNews);
-    //let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPrivate;
-    //this.getPrivateNews(linkNews, true);
 
     this.events.subscribe('event-main-login-checked'
       , (data => {
