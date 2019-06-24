@@ -111,62 +111,34 @@ class ResourceHandler {
                     order by time desc\
                     LIMIT "+ (req.paramS && req.paramS.limit ? req.paramS.limit : 10) + "\
                     OFFSET "+ (req.paramS && req.paramS.offset ? req.paramS.offset : 0))
-            .then(results => {
+            .then(async results => {
                 //lay file chi tiet tra cho nhom
-                let detailsPromise = new Promise((resolve, reject) => {
-                    if (!results || results.length === 0) {
-                        resolve();
-                    } else {
-                        let countDetails = 0;
-                        for (let idx = 0; idx < results.length; idx++) {
+                if (results && results.length > 0) {
+                    for (let idx = 0; idx < results.length; idx++) {
+                        try {
                             if (results[idx].news_type == 1) {
-                                db.getRsts("select *\
+                                results[idx].medias = await db.getRsts("select *\
                                 from news_files\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
                             } else if (results[idx].news_type == 2) {
-                                db.getRsts("select *\
+                                results[idx].medias = await db.getRsts("select *\
                                 from news_shares\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else {
-                                countDetails++;
-                                if (countDetails == results.length) {
-                                    resolve();
-                                };
                             }
+                        } catch (e) {
+
                         }
                     }
-                })
-                detailsPromise.then(data => {
-                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify(results
-                        , (key, value) => {
-                            if (value === null) { return undefined; }
-                            return value
-                        }
-                    ));
-                })
-                    .catch(err => {
-                        res.writeHead(404, { 'Content-Type': 'text/html' });
-                        res.end(JSON.stringify(err));
-                    })
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify(results
+                    , (key, value) => {
+                        if (value === null) { return undefined; }
+                        return value
+                    }
+                ));
             }).catch(err => {
                 res.writeHead(404, { 'Content-Type': 'text/html' });
                 res.end(JSON.stringify(err));

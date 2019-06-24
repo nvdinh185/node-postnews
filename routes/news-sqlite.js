@@ -4,7 +4,7 @@ const postHandler = require('../utils/post-handler');
 const tokenHandler = require('../utils/token-handler');
 const proxyHandler = require('../handlers/proxy-handler');
 
-const resourceHandler = require('../handlers/news-handler');
+const resourceHandler = require('../handlers/news-handler2');
 
 let handlers = resourceHandler.ResourceHandler;
 

@@ -60,6 +60,7 @@ export class HomeNewsPage {
 
     this.newsService.getNews(linkNews)
       .then(data => {
+        console.log(data)
         data.forEach(el => {
           this.pageIndexPublic++;
           let medias = [];
