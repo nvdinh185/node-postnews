@@ -11,7 +11,7 @@ export class MyApp {
 
   ngOnInit() {
     setTimeout(() => {
-      this.events.publish('event-main-login-checked', { username: "766777123", fullname: "Nguyen Van Dinh" })
+      this.events.publish('event-main-login-checked', { username: "766777123", fullname: "Nguyen Van Dinh", image: "assets/imgs/avatar.jpg" })
     }, 10);
   }
 }

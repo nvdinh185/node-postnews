@@ -1,12 +1,12 @@
 webpackJsonp([0],{
 
-/***/ 149:
+/***/ 150:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NewsService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__(134);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -48,7 +48,7 @@ var NewsService = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 160:
+/***/ 161:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -61,11 +61,11 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 160;
+webpackEmptyAsyncContext.id = 161;
 
 /***/ }),
 
-/***/ 204:
+/***/ 205:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -78,7 +78,7 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 204;
+webpackEmptyAsyncContext.id = 205;
 
 /***/ }),
 
@@ -88,11 +88,11 @@ webpackEmptyAsyncContext.id = 204;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomeNewsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(42);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__post_news_post_news__ = __webpack_require__(343);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_in_app_browser_ngx__ = __webpack_require__(251);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_NewService__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__dynamic_card_social_dynamic_card_social__ = __webpack_require__(677);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_NewService__ = __webpack_require__(150);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__dynamic_card_social_dynamic_card_social__ = __webpack_require__(346);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -137,6 +137,7 @@ var HomeNewsPage = /** @class */ (function () {
             _this.getPrivateNews(linkPrivateNews);
         }));
         this.events.subscribe('postok', function () {
+            _this.dynamicCards.items = [];
             var linkPublicNews = _this.server + "/db/get-public-news?limit=" + _this.maxOnePage + "&offset=0";
             _this.getPublicNews(linkPublicNews);
             var linkNews = _this.server + "/db/get-news?limit=" + _this.maxOnePage + "&offset=0";
@@ -216,8 +217,7 @@ var HomeNewsPage = /** @class */ (function () {
     };
     HomeNewsPage.prototype.onClickHeader = function (btn) {
         if (btn.next === 'ADD') {
-            var modal = this.modalCtrl.create(__WEBPACK_IMPORTED_MODULE_2__post_news_post_news__["a" /* PostNewsPage */]);
-            modal.present();
+            this.openModal(__WEBPACK_IMPORTED_MODULE_2__post_news_post_news__["a" /* PostNewsPage */], { userInfo: this.userInfo });
         }
     };
     HomeNewsPage.prototype.onClickMedia = function (it) {
@@ -290,8 +290,8 @@ var HomeNewsPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PostNewsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_NewService__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_NewService__ = __webpack_require__(150);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_apiImageService__ = __webpack_require__(344);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__dynamic_form_web_dynamic_form_web__ = __webpack_require__(345);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -318,7 +318,7 @@ var PostNewsPage = /** @class */ (function () {
         this.newsService = newsService;
         this.events = events;
         this.apiImageService = apiImageService;
-        this.owner = 1;
+        this.owner = 2;
         this.ownerType = {
             "1": "public",
             "2": "friends",
@@ -333,7 +333,7 @@ var PostNewsPage = /** @class */ (function () {
         };
     }
     PostNewsPage.prototype.ngOnInit = function () {
-        //this.userInfo = this.apiAuth.getUserInfo();
+        this.userInfo = this.navParams.get("userInfo");
         //console.log(this.userInfo)
     };
     PostNewsPage.prototype.fileChange = function (event) {
@@ -390,7 +390,7 @@ var PostNewsPage = /** @class */ (function () {
             title: "Tiêu đề của trang",
             items: [
                 { type: "title", name: "Tiêu đề form" },
-                { type: "select", key: "owner", name: "chon chia se", value: this.owner, options: options },
+                { type: "select", key: "owner", name: "chon chia se", icon: "flower", value: this.owner, options: options },
                 {
                     type: "button",
                     options: [
@@ -458,17 +458,12 @@ var PostNewsPage = /** @class */ (function () {
     };
     PostNewsPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-post-news',template:/*ion-inline-start:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\pages\post-news\post-news.html"*/'<ion-header>\n\n  <ion-navbar>\n\n    <ion-title>Post News</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n<ion-grid>\n\n  <ion-row>\n\n    <ion-col>\n\n      <ion-item>\n\n        <ion-avatar item-start><img [src]="userInfo?.data?.image"></ion-avatar>\n\n        <h1>{{userInfo?.data?.nickname?userInfo?.data?.nickname:userInfo?.username}}</h1>\n\n        <h2>{{userInfo?.data?.fullname}}</h2>\n\n        <ion-note item-end>{{ownerType[owner]}}</ion-note>\n\n        <button item-end icon-only ion-button clear small (click)=onClickSelect()>\n\n          <ion-icon name="globe"></ion-icon>\n\n        </button>\n\n      </ion-item>\n\n    </ion-col>\n\n  </ion-row>\n\n  <ion-row>\n\n    <ion-col>\n\n      <ion-textarea [(ngModel)]="content" #txtStatus rows="1" placeholder="Ban dang nghi gi?" autosize style="border: 1px solid rgb(184, 179, 179)">\n\n      </ion-textarea>\n\n    </ion-col>\n\n  </ion-row>\n\n  <ion-row>\n\n    <ion-col col-2>\n\n      <button ion-button icon-start round>\n\n        <input class="file-over" type="file" multiple accept="image/*" (change)="fileChange($event)">\n\n        <ion-icon name="images"></ion-icon>\n\n        Photo/Video\n\n      </button>\n\n    </ion-col>\n\n  </ion-row>\n\n\n\n  <!-- 1 pics -->\n\n  <div class="card-background-page" *ngIf="fileImages?.length==1">\n\n    <img [src]="fileImages[0].image" />\n\n    <div class="card-title">{{fileImages[0].title}}</div>\n\n    <div class="card-subtitle">{{fileImages[0].subtitle}}</div>\n\n  </div>\n\n\n\n  <!-- 2 pics -->\n\n  <ion-row *ngIf="fileImages?.length==2">\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n      <div class="card-title">{{fileImages[0].title}}</div>\n\n      <div class="card-subtitle">{{fileImages[0].subtitle}}</div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n      <div class="card-title">{{fileImages[1].title}}</div>\n\n      <div class="card-subtitle">{{fileImages[1].subtitle}}</div>\n\n    </ion-col>\n\n  </ion-row>\n\n\n\n  <!-- 3 pics -->\n\n  <ion-row *ngIf="fileImages?.length==3">\n\n    <ion-col no-padding class="padding-col card-background-page" col-12>\n\n      <div class="image-height-1" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n      <div class="card-title" *ngIf="fileImages[0].title">{{fileImages[0].title}}</div>\n\n      <div class="card-subtitle" *ngIf="fileImages[0].subtitle">{{fileImages[0].subtitle}}</div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[2].image+\')\'"></div>\n\n    </ion-col>\n\n  </ion-row>\n\n\n\n  <!-- 4 pics -->\n\n  <ion-row *ngIf="fileImages?.length==4">\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n      <div class="card-title" *ngIf="fileImages[0].title">{{fileImages[0].title}}</div>\n\n      <div class="card-subtitle" *ngIf="fileImages[0].subtitle">{{fileImages[0].subtitle}}</div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n      <div class="card-title" *ngIf="fileImages[1].title">{{fileImages[1].title}}</div>\n\n      <div class="card-subtitle" *ngIf="fileImages[1].subtitle">{{fileImages[1].subtitle}}</div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[2].image+\')\'"></div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[3].image+\')\'"></div>\n\n    </ion-col>\n\n  </ion-row>\n\n\n\n  <!-- 5+ pics -->\n\n  <ion-row *ngIf="fileImages?.length>=5">\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n      <div class="card-title" *ngIf="fileImages[0].title">{{fileImages[0].title}}</div>\n\n      <div class="card-subtitle" *ngIf="fileImages[0].subtitle">{{fileImages[0].subtitle}}</div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-6>\n\n      <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n      <div class="card-title" *ngIf="fileImages[1].title">{{fileImages[1].title}}</div>\n\n      <div class="card-subtitle" *ngIf="fileImages[1].subtitle">{{fileImages[1].subtitle}}</div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-4>\n\n      <div class="image-height-3" [style.background-image]="\'url(\'+fileImages[2].image+\')\'"></div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-4>\n\n      <div class="image-height-3" [style.background-image]="\'url(\'+fileImages[3].image+\')\'"></div>\n\n    </ion-col>\n\n    <ion-col no-padding class="padding-col card-background-page" col-4>\n\n      <div class="image-height-3" [style.background-image]="\'url(\'+fileImages[4].image+\')\'"></div>\n\n      <div class="card-title" *ngIf="fileImages.length>5">+{{(fileImages.length-5)}}</div>\n\n    </ion-col>\n\n  </ion-row>\n\n  <button ion-button full (click)="onShare()" [disabled]="txtStatus.value === \'\'">Share</button>\n\n  <button ion-button full (click)="cancel()">Cancel</button>\n\n</ion-grid>\n\n</ion-content>'/*ion-inline-end:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\pages\post-news\post-news.html"*/
+            selector: 'page-post-news',template:/*ion-inline-start:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\pages\post-news\post-news.html"*/'<ion-header>\n\n  <ion-navbar>\n\n    <ion-title>Post News</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col>\n\n        <ion-item>\n\n          <ion-avatar item-start><img [src]="userInfo?.image"></ion-avatar>\n\n          <h1>{{userInfo?.username}}</h1>\n\n          <ion-note item-end>{{ownerType[owner]}}</ion-note>\n\n          <button item-end icon-only ion-button clear small (click)=onClickSelect()>\n\n            <ion-icon name="globe"></ion-icon>\n\n          </button>\n\n        </ion-item>\n\n      </ion-col>\n\n    </ion-row>\n\n    <ion-row>\n\n      <ion-col>\n\n        <ion-textarea [(ngModel)]="content" #txtStatus rows="1" placeholder="Ban dang nghi gi?" autosize\n\n          style="border: 1px solid rgb(184, 179, 179)">\n\n        </ion-textarea>\n\n      </ion-col>\n\n    </ion-row>\n\n    <ion-row>\n\n      <ion-col col-2>\n\n        <button ion-button icon-start round>\n\n          <input class="file-over" type="file" multiple accept="image/*" (change)="fileChange($event)">\n\n          <ion-icon name="images"></ion-icon>\n\n          Photo/Video\n\n        </button>\n\n      </ion-col>\n\n    </ion-row>\n\n\n\n    <!-- 1 pics -->\n\n    <div class="card-background-page" *ngIf="fileImages?.length==1">\n\n      <img [src]="fileImages[0].image" />\n\n      <div class="card-title">{{fileImages[0].title}}</div>\n\n      <div class="card-subtitle">{{fileImages[0].subtitle}}</div>\n\n    </div>\n\n\n\n    <!-- 2 pics -->\n\n    <ion-row *ngIf="fileImages?.length==2">\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n        <div class="card-title">{{fileImages[0].title}}</div>\n\n        <div class="card-subtitle">{{fileImages[0].subtitle}}</div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n        <div class="card-title">{{fileImages[1].title}}</div>\n\n        <div class="card-subtitle">{{fileImages[1].subtitle}}</div>\n\n      </ion-col>\n\n    </ion-row>\n\n\n\n    <!-- 3 pics -->\n\n    <ion-row *ngIf="fileImages?.length==3">\n\n      <ion-col no-padding class="padding-col card-background-page" col-12>\n\n        <div class="image-height-1" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n        <div class="card-title" *ngIf="fileImages[0].title">{{fileImages[0].title}}</div>\n\n        <div class="card-subtitle" *ngIf="fileImages[0].subtitle">{{fileImages[0].subtitle}}</div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[2].image+\')\'"></div>\n\n      </ion-col>\n\n    </ion-row>\n\n\n\n    <!-- 4 pics -->\n\n    <ion-row *ngIf="fileImages?.length==4">\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n        <div class="card-title" *ngIf="fileImages[0].title">{{fileImages[0].title}}</div>\n\n        <div class="card-subtitle" *ngIf="fileImages[0].subtitle">{{fileImages[0].subtitle}}</div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n        <div class="card-title" *ngIf="fileImages[1].title">{{fileImages[1].title}}</div>\n\n        <div class="card-subtitle" *ngIf="fileImages[1].subtitle">{{fileImages[1].subtitle}}</div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[2].image+\')\'"></div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[3].image+\')\'"></div>\n\n      </ion-col>\n\n    </ion-row>\n\n\n\n    <!-- 5+ pics -->\n\n    <ion-row *ngIf="fileImages?.length>=5">\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[0].image+\')\'"></div>\n\n        <div class="card-title" *ngIf="fileImages[0].title">{{fileImages[0].title}}</div>\n\n        <div class="card-subtitle" *ngIf="fileImages[0].subtitle">{{fileImages[0].subtitle}}</div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-6>\n\n        <div class="image-height-2" [style.background-image]="\'url(\'+fileImages[1].image+\')\'"></div>\n\n        <div class="card-title" *ngIf="fileImages[1].title">{{fileImages[1].title}}</div>\n\n        <div class="card-subtitle" *ngIf="fileImages[1].subtitle">{{fileImages[1].subtitle}}</div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-4>\n\n        <div class="image-height-3" [style.background-image]="\'url(\'+fileImages[2].image+\')\'"></div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-4>\n\n        <div class="image-height-3" [style.background-image]="\'url(\'+fileImages[3].image+\')\'"></div>\n\n      </ion-col>\n\n      <ion-col no-padding class="padding-col card-background-page" col-4>\n\n        <div class="image-height-3" [style.background-image]="\'url(\'+fileImages[4].image+\')\'"></div>\n\n        <div class="card-title" *ngIf="fileImages.length>5">+{{(fileImages.length-5)}}</div>\n\n      </ion-col>\n\n    </ion-row>\n\n    <button ion-button full (click)="onShare()" [disabled]="txtStatus.value === \'\'">Share</button>\n\n    <button ion-button full (click)="cancel()">Cancel</button>\n\n  </ion-grid>\n\n</ion-content>'/*ion-inline-end:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\pages\post-news\post-news.html"*/
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* LoadingController */],
-            __WEBPACK_IMPORTED_MODULE_2__services_NewService__["a" /* NewsService */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* Events */],
-            __WEBPACK_IMPORTED_MODULE_3__services_apiImageService__["a" /* ApiImageService */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* LoadingController */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2__services_NewService__["a" /* NewsService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_NewService__["a" /* NewsService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* Events */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_3__services_apiImageService__["a" /* ApiImageService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_apiImageService__["a" /* ApiImageService */]) === "function" && _g || Object])
     ], PostNewsPage);
     return PostNewsPage;
+    var _a, _b, _c, _d, _e, _f, _g;
 }());
 
 //# sourceMappingURL=post-news.js.map
@@ -481,7 +476,7 @@ var PostNewsPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApiImageService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_exif_js__ = __webpack_require__(676);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_exif_js__ = __webpack_require__(678);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_exif_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_exif_js__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -854,7 +849,7 @@ var ApiImageService = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DynamicFormWebPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(42);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1123,150 +1118,10 @@ var DynamicFormWebPage = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(347);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(351);
-
-
-Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
-//# sourceMappingURL=main.js.map
-
-/***/ }),
-
-/***/ 351:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__(244);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(388);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_in_app_browser_ngx__ = __webpack_require__(251);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_component__ = __webpack_require__(675);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_home_news_home_news__ = __webpack_require__(342);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_post_news_post_news__ = __webpack_require__(343);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__services_NewService__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__services_apiImageService__ = __webpack_require__(344);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_dynamic_form_web_dynamic_form_web__ = __webpack_require__(345);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_dynamic_card_social_dynamic_card_social__ = __webpack_require__(677);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_apiHttpPublicServices__ = __webpack_require__(678);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var AppModule = /** @class */ (function () {
-    function AppModule() {
-    }
-    AppModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_3__angular_core__["I" /* NgModule */])({
-            declarations: [
-                __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */],
-                __WEBPACK_IMPORTED_MODULE_7__pages_home_news_home_news__["a" /* HomeNewsPage */],
-                __WEBPACK_IMPORTED_MODULE_8__pages_post_news_post_news__["a" /* PostNewsPage */],
-                __WEBPACK_IMPORTED_MODULE_11__pages_dynamic_form_web_dynamic_form_web__["a" /* DynamicFormWebPage */],
-                __WEBPACK_IMPORTED_MODULE_12__pages_dynamic_card_social_dynamic_card_social__["a" /* DynamicCardSocialPage */]
-            ],
-            imports: [
-                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-                __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["b" /* HttpClientModule */],
-                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */], {}, {
-                    links: []
-                })
-            ],
-            bootstrap: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* IonicApp */]],
-            entryComponents: [
-                __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */],
-                __WEBPACK_IMPORTED_MODULE_7__pages_home_news_home_news__["a" /* HomeNewsPage */],
-                __WEBPACK_IMPORTED_MODULE_8__pages_post_news_post_news__["a" /* PostNewsPage */],
-                __WEBPACK_IMPORTED_MODULE_11__pages_dynamic_form_web_dynamic_form_web__["a" /* DynamicFormWebPage */],
-                __WEBPACK_IMPORTED_MODULE_12__pages_dynamic_card_social_dynamic_card_social__["a" /* DynamicCardSocialPage */]
-            ],
-            providers: [
-                __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__["a" /* StatusBar */],
-                __WEBPACK_IMPORTED_MODULE_9__services_NewService__["a" /* NewsService */],
-                __WEBPACK_IMPORTED_MODULE_5__ionic_native_in_app_browser_ngx__["a" /* InAppBrowser */],
-                __WEBPACK_IMPORTED_MODULE_10__services_apiImageService__["a" /* ApiImageService */],
-                __WEBPACK_IMPORTED_MODULE_13__services_apiHttpPublicServices__["a" /* ApiHttpPublicService */]
-            ]
-        })
-    ], AppModule);
-    return AppModule;
-}());
-
-//# sourceMappingURL=app.module.js.map
-
-/***/ }),
-
-/***/ 675:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_home_news_home_news__ = __webpack_require__(342);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(47);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-var MyApp = /** @class */ (function () {
-    function MyApp(events) {
-        this.events = events;
-        this.rootPage = __WEBPACK_IMPORTED_MODULE_1__pages_home_news_home_news__["a" /* HomeNewsPage */];
-    }
-    MyApp.prototype.ngOnInit = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.events.publish('event-main-login-checked', { username: "766777123", fullname: "Nguyen Van Dinh" });
-        }, 10);
-    };
-    MyApp = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\app\app.html"*/'<ion-split-pane when="md">\n\n    <ion-nav [root]="rootPage" #content main swipeBackEnabled="false"></ion-nav>\n\n</ion-split-pane>'/*ion-inline-end:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\app\app.html"*/
-        }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* Events */]) === "function" && _a || Object])
-    ], MyApp);
-    return MyApp;
-    var _a;
-}());
-
-//# sourceMappingURL=app.component.js.map
-
-/***/ }),
-
-/***/ 677:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DynamicCardSocialPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_apiHttpPublicServices__ = __webpack_require__(678);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_apiHttpPublicServices__ = __webpack_require__(347);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1652,12 +1507,12 @@ var DynamicCardSocialPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 678:
+/***/ 347:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApiHttpPublicService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(134);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1930,7 +1785,147 @@ var ApiHttpPublicService = /** @class */ (function () {
 
 //# sourceMappingURL=apiHttpPublicServices.js.map
 
+/***/ }),
+
+/***/ 348:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(349);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(353);
+
+
+Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ 353:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__(134);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(390);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_in_app_browser_ngx__ = __webpack_require__(251);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_component__ = __webpack_require__(677);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_home_news_home_news__ = __webpack_require__(342);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_post_news_post_news__ = __webpack_require__(343);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__services_NewService__ = __webpack_require__(150);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__services_apiImageService__ = __webpack_require__(344);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_dynamic_form_web_dynamic_form_web__ = __webpack_require__(345);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_dynamic_card_social_dynamic_card_social__ = __webpack_require__(346);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_apiHttpPublicServices__ = __webpack_require__(347);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var AppModule = /** @class */ (function () {
+    function AppModule() {
+    }
+    AppModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_3__angular_core__["I" /* NgModule */])({
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_7__pages_home_news_home_news__["a" /* HomeNewsPage */],
+                __WEBPACK_IMPORTED_MODULE_8__pages_post_news_post_news__["a" /* PostNewsPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_dynamic_form_web_dynamic_form_web__["a" /* DynamicFormWebPage */],
+                __WEBPACK_IMPORTED_MODULE_12__pages_dynamic_card_social_dynamic_card_social__["a" /* DynamicCardSocialPage */]
+            ],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_2__angular_common_http__["b" /* HttpClientModule */],
+                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */], {}, {
+                    links: []
+                })
+            ],
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* IonicApp */]],
+            entryComponents: [
+                __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_7__pages_home_news_home_news__["a" /* HomeNewsPage */],
+                __WEBPACK_IMPORTED_MODULE_8__pages_post_news_post_news__["a" /* PostNewsPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_dynamic_form_web_dynamic_form_web__["a" /* DynamicFormWebPage */],
+                __WEBPACK_IMPORTED_MODULE_12__pages_dynamic_card_social_dynamic_card_social__["a" /* DynamicCardSocialPage */]
+            ],
+            providers: [
+                __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__["a" /* StatusBar */],
+                __WEBPACK_IMPORTED_MODULE_9__services_NewService__["a" /* NewsService */],
+                __WEBPACK_IMPORTED_MODULE_5__ionic_native_in_app_browser_ngx__["a" /* InAppBrowser */],
+                __WEBPACK_IMPORTED_MODULE_10__services_apiImageService__["a" /* ApiImageService */],
+                __WEBPACK_IMPORTED_MODULE_13__services_apiHttpPublicServices__["a" /* ApiHttpPublicService */]
+            ]
+        })
+    ], AppModule);
+    return AppModule;
+}());
+
+//# sourceMappingURL=app.module.js.map
+
+/***/ }),
+
+/***/ 677:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_home_news_home_news__ = __webpack_require__(342);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(42);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var MyApp = /** @class */ (function () {
+    function MyApp(events) {
+        this.events = events;
+        this.rootPage = __WEBPACK_IMPORTED_MODULE_1__pages_home_news_home_news__["a" /* HomeNewsPage */];
+    }
+    MyApp.prototype.ngOnInit = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.events.publish('event-main-login-checked', { username: "766777123", fullname: "Nguyen Van Dinh", image: "assets/imgs/avatar.jpg" });
+        }, 10);
+    };
+    MyApp = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\app\app.html"*/'<ion-split-pane when="md">\n\n    <ion-nav [root]="rootPage" #content main swipeBackEnabled="false"></ion-nav>\n\n</ion-split-pane>'/*ion-inline-end:"D:\DINHNV\MyData\LapTrinhDiDong\NODE_Baitap\node-quan-ly-nha-tram\node-postnews\src\app\app.html"*/
+        }),
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* Events */]) === "function" && _a || Object])
+    ], MyApp);
+    return MyApp;
+    var _a;
+}());
+
+//# sourceMappingURL=app.component.js.map
+
 /***/ })
 
-},[346]);
+},[348]);
 //# sourceMappingURL=main.js.map

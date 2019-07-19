@@ -10,7 +10,7 @@ import { DynamicFormWebPage } from '../dynamic-form-web/dynamic-form-web';
 })
 export class PostNewsPage implements OnInit {
   fileImages: any;
-  owner: any = 1;
+  owner: any = 2;
   ownerType = {
     "1": "public",
     "2": "friends",
@@ -31,7 +31,7 @@ export class PostNewsPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    //this.userInfo = this.apiAuth.getUserInfo();
+    this.userInfo = this.navParams.get("userInfo")
     //console.log(this.userInfo)
   }
 
@@ -86,7 +86,6 @@ export class PostNewsPage implements OnInit {
   }
 
   onClickSelect() {
-
     let options = [];
     for (let key in this.ownerType) {
       options.push({ name: this.ownerType[key], value: key })
@@ -96,7 +95,7 @@ export class PostNewsPage implements OnInit {
       title: "Tiêu đề của trang"
       , items: [
         { type: "title", name: "Tiêu đề form" }
-        , { type: "select", key: "owner", name: "chon chia se", value: this.owner, options: options }
+        , { type: "select", key: "owner", name: "chon chia se", icon: "flower", value: this.owner, options: options }
         , {
           type: "button"
           , options: [
@@ -169,8 +168,8 @@ export class PostNewsPage implements OnInit {
           })
       })
   }
-  
-  cancel(){
+
+  cancel() {
     this.navCtrl.pop();
   }
 }

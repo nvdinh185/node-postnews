@@ -36,6 +36,7 @@ export class HomeNewsPage {
       })
     )
     this.events.subscribe('postok', () => {
+      this.dynamicCards.items = []
       let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=0";
       this.getPublicNews(linkPublicNews);
       let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=0";
@@ -126,8 +127,7 @@ export class HomeNewsPage {
 
   onClickHeader(btn) {
     if (btn.next === 'ADD') {
-      let modal = this.modalCtrl.create(PostNewsPage);
-      modal.present();
+      this.openModal(PostNewsPage, { userInfo: this.userInfo })
     }
   }
 
