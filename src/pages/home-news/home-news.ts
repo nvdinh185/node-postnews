@@ -3,6 +3,7 @@ import { Events, ModalController, Platform } from 'ionic-angular';
 import { PostNewsPage } from '../post-news/post-news';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NewsService } from '../../services/NewService';
+import { DynamicCardSocialPage } from '../dynamic-card-social/dynamic-card-social';
 
 @Component({
   selector: 'page-home-news',
@@ -12,9 +13,7 @@ export class HomeNewsPage {
 
   server = "http://localhost:8080/news"
   userInfo: any;
-  maxOnePage = 2;
-  pageIndexPublic = 0;
-  pageIndexPrivate = 0;
+  maxOnePage = 5;
   contacts = {}
 
   constructor(private events: Events
@@ -25,24 +24,22 @@ export class HomeNewsPage {
   ) { }
 
   ngOnInit() {
-    let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPublic;
+    let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=0";
     this.getPublicNews(linkPublicNews);
 
     this.events.subscribe('event-main-login-checked'
       , (data => {
-        this.userInfo = data.user;
-        console.log('UserInfo: ', this.userInfo);
-        let linkPrivateNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPrivate;
+        this.userInfo = data;
+        console.log('UserInfo: ', this.userInfo.username);
+        let linkPrivateNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=0";
         this.getPrivateNews(linkPrivateNews);
       })
     )
     this.events.subscribe('postok', () => {
-      this.pageIndexPublic = 0;
-      this.pageIndexPrivate = 0;
-      let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPublic;
-      this.getPublicNews(linkPublicNews, true);
-      let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPrivate;
-      this.getPrivateNews(linkNews, true);
+      let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=0";
+      this.getPublicNews(linkPublicNews);
+      let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=0";
+      this.getPrivateNews(linkNews);
     });
   }
 
@@ -54,7 +51,7 @@ export class HomeNewsPage {
     , items: []
   }
 
-  getPublicNews(linkNews, reNews?: boolean) {
+  getPublicNews(linkNews) {
     this.dynamicCards.title = "Đây là trang tin của Public";
     let linkFile = this.server + "/db/get-file/"
 
@@ -62,7 +59,6 @@ export class HomeNewsPage {
       .then(data => {
         console.log(data)
         data.forEach(el => {
-          this.pageIndexPublic++;
           let medias = [];
           if (el.medias) {
             el.medias.forEach(e => {
@@ -86,25 +82,19 @@ export class HomeNewsPage {
             , note: el.time
             , action: { color: "primary", icon: "more", next: "MORE" }
           }
-
-          let index = this.dynamicCards.items
-            .findIndex(x => x.group_id === el.group_id);
-          if (index < 0) {
-            reNews ? this.dynamicCards.items.unshift(el) : this.dynamicCards.items.push(el);
-          }
+          this.dynamicCards.items.push(el);
         });
       })
       .catch(err => console.log(err))
   }
 
-  getPrivateNews(linkNews, reNews?: boolean) {
+  getPrivateNews(linkNews) {
     this.dynamicCards.title = "Đây là trang tin của " + (this.userInfo ? this.userInfo.username : "")
     let linkFile = this.server + "/db/get-file/"
 
     this.newsService.getNews(linkNews)
       .then(data => {
         data.forEach(el => {
-          this.pageIndexPrivate++;
           let medias = [];
           if (el.medias) {
             el.medias.forEach(e => {
@@ -128,40 +118,10 @@ export class HomeNewsPage {
             , note: el.time
             , action: { color: "primary", icon: "more", next: "MORE" }
           }
-          let index = this.dynamicCards.items
-            .findIndex(x => x.group_id === el.group_id);
-          if (index < 0) {
-            reNews ? this.dynamicCards.items.unshift(el) : this.dynamicCards.items.push(el);
-          }
+          this.dynamicCards.items.push(el);
         });
       })
       .catch(err => console.log(err))
-  }
-
-  doInfinite(ev) {
-    let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPublic;
-    this.getPublicNews(linkPublicNews);
-    if (this.userInfo) {
-      let linkPrivateNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPrivate;
-      this.getPrivateNews(linkPrivateNews);
-    }
-    setTimeout(() => {
-      ev.complete();
-    }, 500);
-  }
-
-  doRefresh(ev) {
-    this.pageIndexPublic = 0;
-    this.pageIndexPrivate = 0;
-    let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPublic;
-    this.getPublicNews(linkPublicNews, true);
-    if (this.userInfo) {
-      let linkPrivateNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=" + this.pageIndexPrivate;
-      this.getPrivateNews(linkPrivateNews, true);
-    }
-    setTimeout(() => {
-      ev.complete();
-    }, 500);
   }
 
   onClickHeader(btn) {
@@ -193,8 +153,8 @@ export class HomeNewsPage {
         , items: [
           {
             short_detail: {
-              avatar: this.userInfo ? this.userInfo.data.image : ""
-              , h1: this.userInfo.data.fullname
+              avatar: this.userInfo ? "assets/imgs/avatar.jpg" : "assets/imgs/no-image-go.jpg"
+              , h1: this.userInfo ? this.userInfo.fullname : "GUEST"
               , p: it.content
               , note: it.time
               , action: { color: "primary", icon: "more", next: "MORE" }
@@ -203,8 +163,6 @@ export class HomeNewsPage {
               title: it.title
               , paragraphs: [
                 {
-                  //h2: "Chốn yên bình"
-                  //, p: "Là nơi bình yên nhất. Bạn có thể dạo bước trên con đường rợp bóng mát thanh bình đến lạ"
                   medias: it.medias
                 }
               ]
@@ -214,8 +172,8 @@ export class HomeNewsPage {
           }
         ]
       };
-      /* this.openModal(DynamicCardSocialPage
-        , { form: dynamicCardsOrigin }); */
+      this.openModal(DynamicCardSocialPage
+        , { form: dynamicCardsOrigin });
     }
   }
 

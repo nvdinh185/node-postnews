@@ -32,73 +32,36 @@ class ResourceHandler {
     }
 
     getPrivateNewsList(req, res) {
-        db.getRsts("select *\
-                    from news\
-                    where user = '"+ (req.paramS && req.paramS.user ? req.paramS.user : req.user && req.user.username ? req.user.username : "123456789") + "'\
-                    and share_status != 1\
+        db.getRsts("select * from news\
+                    where share_status != 1\
                     order by time desc\
                     LIMIT "+ (req.paramS && req.paramS.limit ? req.paramS.limit : 10) + "\
                     OFFSET "+ (req.paramS && req.paramS.offset ? req.paramS.offset : 0) + "\
                     ")
-            .then(results => {
+            .then(async results => {
                 //lay file chi tiet tra cho nhom
-                let detailsPromise = new Promise((resolve, reject) => {
-                    if (!results || results.length === 0) {
-                        resolve();
-                    } else {
-                        let countDetails = 0;
-                        for (let idx = 0; idx < results.length; idx++) {
-                            if (results[idx].news_type == 1) {
-                                //console.log("11")
-                                db.getRsts("select *\
+                if (results.length > 0) {
+                    for (let idx = 0; idx < results.length; idx++) {
+                        if (results[idx].news_type == 1) {
+                            results[idx].medias = await db.getRsts("select *\
                                 from news_files\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else if (results[idx].news_type == 2) {
-                                //console.log("21")
-                                db.getRsts("select *\
+                        } else if (results[idx].news_type == 2) {
+                            results[idx].medias = await db.getRsts("select *\
                                 from news_shares\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else {
-                                //console.log("01")
-                                countDetails++;
-                                if (countDetails == results.length) {
-                                    resolve();
-                                };
-                            }
                         }
                     }
-                })
-                detailsPromise.then(data => {
-                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify(results
-                        , (key, value) => {
-                            if (value === null) { return undefined; }
-                            return value
-                        }
-                    ));
-                })
-                    .catch(err => {
-                        res.writeHead(404, { 'Content-Type': 'text/html' });
-                        res.end(JSON.stringify(err));
-                    })
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify(results
+                    , (key, value) => {
+                        if (value === null) { return undefined; }
+                        return value
+                    }
+                ));
             }).catch(err => {
                 res.writeHead(404, { 'Content-Type': 'text/html' });
                 res.end(JSON.stringify(err));
@@ -106,29 +69,26 @@ class ResourceHandler {
     }
 
     getPublicNewsList(req, res) {
-        console.log(req.paramS)
-        db.getRsts("select * from news where share_status = 1\
+        //console.log(req.paramS)
+        db.getRsts("select * from news\
+                    where share_status = 1\
                     order by time desc\
                     LIMIT "+ (req.paramS && req.paramS.limit ? req.paramS.limit : 10) + "\
                     OFFSET "+ (req.paramS && req.paramS.offset ? req.paramS.offset : 0))
             .then(async results => {
                 //lay file chi tiet tra cho nhom
-                if (results && results.length > 0) {
+                if (results.length > 0) {
                     for (let idx = 0; idx < results.length; idx++) {
-                        try {
-                            if (results[idx].news_type == 1) {
-                                results[idx].medias = await db.getRsts("select *\
+                        if (results[idx].news_type == 1) {
+                            results[idx].medias = await db.getRsts("select *\
                                 from news_files\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                            } else if (results[idx].news_type == 2) {
-                                results[idx].medias = await db.getRsts("select *\
+                        } else if (results[idx].news_type == 2) {
+                            results[idx].medias = await db.getRsts("select *\
                                 from news_shares\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                            }
-                        } catch (e) {
-
                         }
                     }
                 }

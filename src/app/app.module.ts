@@ -12,6 +12,8 @@ import { PostNewsPage } from '../pages/post-news/post-news';
 import { NewsService } from '../services/NewService';
 import { ApiImageService } from '../services/apiImageService';
 import { DynamicFormWebPage } from '../pages/dynamic-form-web/dynamic-form-web';
+import { DynamicCardSocialPage } from '../pages/dynamic-card-social/dynamic-card-social';
+import { ApiHttpPublicService } from '../services/apiHttpPublicServices';
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import { DynamicFormWebPage } from '../pages/dynamic-form-web/dynamic-form-web';
     MyApp,
     HomeNewsPage,
     PostNewsPage,
-    DynamicFormWebPage
+    DynamicFormWebPage,
+    DynamicCardSocialPage
   ],
   imports: [
     BrowserModule,
@@ -31,13 +34,15 @@ import { DynamicFormWebPage } from '../pages/dynamic-form-web/dynamic-form-web';
     MyApp,
     HomeNewsPage,
     PostNewsPage,
-    DynamicFormWebPage
+    DynamicFormWebPage,
+    DynamicCardSocialPage
   ],
   providers: [
     StatusBar,
     NewsService,
     InAppBrowser,
-    ApiImageService    
+    ApiImageService,
+    ApiHttpPublicService   
   ]
 })
 export class AppModule {}
