@@ -1,0 +1,18 @@
+CLIENT:
+1. lấy các tin public và các tin private, dựa vào share_status
+2. dựa vào news_type để lấy tin có link hay tin có ảnh trong DB
+3. Nếu chưa đăng nhập thì lấy các tin public, còn nếu đăng nhập rồi thì
+lấy cả tin public và tin private luôn
+
+4. khi kích vào một hình ảnh của một tin bất kỳ thì hiện chi tiết các ảnh
+trong tin đó (sử dụng component dynamic-card-social)
+
+5. chức năng post-news: có sử dụng component dynamic-form-web để chọn chế độ share của tin
+
+SERVER:
+1. Tạo server: có đường dẫn đến file routes/news-sqlite.js
+2. Tạo file news-sqlite.js: có các đường dẫn để xử lý các công việc:
+	a) lấy các tin tức public
+	b) lấy các tin tức private
+	c) lấy các hình ảnh dựa vào link
+	d) post tin

@@ -140,8 +140,10 @@ var HomeNewsPage = /** @class */ (function () {
             _this.dynamicCards.items = [];
             var linkPublicNews = _this.server + "/db/get-public-news?limit=" + _this.maxOnePage + "&offset=0";
             _this.getPublicNews(linkPublicNews);
-            var linkNews = _this.server + "/db/get-news?limit=" + _this.maxOnePage + "&offset=0";
-            _this.getPrivateNews(linkNews);
+            if (_this.userInfo) {
+                var linkNews = _this.server + "/db/get-news?limit=" + _this.maxOnePage + "&offset=0";
+                _this.getPrivateNews(linkNews);
+            }
         });
     };
     HomeNewsPage.prototype.getPublicNews = function (linkNews) {
@@ -409,7 +411,7 @@ var PostNewsPage = /** @class */ (function () {
     };
     PostNewsPage.prototype.onShare = function () {
         var _this = this;
-        var url = "https://c3.mobifone.vn/api" + "/ext-public/shot-info-url?url=" + this.content;
+        var url = "https://c3.mobifone.vn/api/ext-public/shot-info-url?url=" + this.content;
         this.newsService.getNews(url)
             .then(function (data) {
             var form_data = new FormData();

@@ -123,7 +123,7 @@ export class PostNewsPage implements OnInit {
   content;
 
   onShare() {
-    let url = "https://c3.mobifone.vn/api" + "/ext-public/shot-info-url?url=" + this.content;
+    let url = "https://c3.mobifone.vn/api/ext-public/shot-info-url?url=" + this.content;
     this.newsService.getNews(url)
       .then(data => {
         let form_data: FormData = new FormData();

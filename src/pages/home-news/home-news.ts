@@ -39,8 +39,10 @@ export class HomeNewsPage {
       this.dynamicCards.items = []
       let linkPublicNews = this.server + "/db/get-public-news?limit=" + this.maxOnePage + "&offset=0";
       this.getPublicNews(linkPublicNews);
-      let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=0";
-      this.getPrivateNews(linkNews);
+      if (this.userInfo) {
+        let linkNews = this.server + "/db/get-news?limit=" + this.maxOnePage + "&offset=0";
+        this.getPrivateNews(linkNews);
+      }
     });
   }
 
