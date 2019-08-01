@@ -7,7 +7,10 @@ lấy cả tin public và tin private luôn
 4. khi kích vào một hình ảnh của một tin bất kỳ thì hiện chi tiết các ảnh
 trong tin đó (sử dụng component dynamic-card-social)
 
-5. chức năng post-news: có sử dụng component dynamic-form-web để chọn chế độ share của tin
+5. chức năng post-news: 
+- có sử dụng component dynamic-form-web để chọn chế độ share của tin
+- chức năng xử lý hình ảnh theo định dạng lưu trữ tiết kiệm để hiển thị ra xem
+- chức năng post ảnh lên server để lưu vào DB
 
 SERVER:
 1. Tạo server: có đường dẫn đến file routes/news-sqlite.js
@@ -16,3 +19,4 @@ SERVER:
 	b) lấy các tin tức private
 	c) lấy các hình ảnh dựa vào link
 	d) post tin
+3. Tạo file news-handler2.js để thực hiện các công việc như trên
