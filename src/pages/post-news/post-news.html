@@ -9,7 +9,7 @@
     <ion-row>
       <ion-col>
         <ion-item>
-          <ion-avatar item-start><img [src]="userInfo?.image"></ion-avatar>
+          <ion-avatar item-start><img *ngIf="userInfo" [src]="userInfo?.image"></ion-avatar>
           <h1>{{userInfo?.username}}</h1>
           <ion-note item-end>{{ownerType[owner]}}</ion-note>
           <button item-end icon-only ion-button clear small (click)=onClickSelect()>

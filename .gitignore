@@ -23,15 +23,13 @@ dist/
 node_modules/
 tmp/
 temp/
-#khong chuyen thu muc upload_files/ len
-#upload_files/
-#khong chuyen database len
-#/db/*.db
 platforms/
 plugins/
 plugins/android.json
 plugins/ios.json
 $RECYCLE.BIN/
+www/
+package-lock.json
 
 .DS_Store
 Thumbs.db

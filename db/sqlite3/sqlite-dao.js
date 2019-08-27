@@ -1,12 +1,11 @@
 
 "use strict"
-
 /**
  * doi tuong sqlite-dao - cuong.dq version 3.0 
  * repaired 20190105: col.value !=undefined && !=null 
  */
 const sqlite3 = require('sqlite3').verbose();
-const isSilence = false;
+const isSilence = require('./sqlite-config').keep_silence;
 
 class SQLiteDAO {
   constructor(dbFilePath) {
@@ -19,7 +18,34 @@ class SQLiteDAO {
     })
   }
 
-
+  /**
+   * Ham chuyen doi mot doi tuong json thanh cau lenh sqlJson 
+   * su dung de goi lenh db.insert/update/delete/select
+   * vi du: 
+   * convertSqlFromJson(dual_table,{x:null,y:1},['y'])
+   * return : {name:dual_table,cols:[{name:x,value:null},{name:y,value:1}],wheres:[name:y,value:1]}
+   * Cau lenh tren su dung de:
+   *  select x,y from dual_table where y=1;
+   * hoac:
+   *  update dual_table x=null, y=1 where y=1;
+   * hoac 
+   *  delete
+   * hoac
+   * insert
+   * @param {*} tableName 
+   * @param {*} obj 
+   * @param {*} wheres 
+   */
+  convertSqlFromJson(tablename, json, idFields){
+    let jsonInsert = { name: tablename, cols: [], wheres: [] }
+    let whereFields = idFields ? idFields : ['cust_id'];
+    for (let key in json) {
+        jsonInsert.cols.push({ name: key, value: json[key] });
+        if (whereFields.find(x => x === key)) jsonInsert.wheres.push({ name: key, value: json[key] })
+    }
+    return jsonInsert;
+  }
+  
   /**
    * 
    * @param {*} table 
@@ -67,11 +93,11 @@ class SQLiteDAO {
     let sql = 'INSERT INTO ' + insertTable.name
       + ' ('
     let i = 0;
-    let sqlNames = '';
-    let sqlValues = '';
+    let sqlNames='';
+    let sqlValues='';
     let params = [];
     for (let col of insertTable.cols) {
-      if (col.value != undefined && col.value != null) {
+      if (col.value!=undefined&&col.value!=null){
         params.push(col.value);
         if (i++ == 0) {
           sqlNames += col.name;
@@ -107,11 +133,11 @@ class SQLiteDAO {
    */
   update(updateTable) {
     let sql = 'UPDATE ' + updateTable.name + ' SET ';
-
+   
     let i = 0;
     let params = [];
     for (let col of updateTable.cols) {
-      if (col.value != undefined && col.value != null) {
+      if (col.value!=undefined&&col.value!=null){
         //neu gia tri khong phai undefined moi duoc thuc thi
         params.push(col.value);
         if (i++ == 0) {
@@ -124,14 +150,14 @@ class SQLiteDAO {
 
     i = 0;
     for (let col of updateTable.wheres) {
-      if (col.value != undefined && col.value != null) {
+      if (col.value!=undefined&&col.value!=null){
         params.push(col.value);
         if (i++ == 0) {
           sql += ' WHERE ' + col.name + '= ?';
         } else {
           sql += ' AND ' + col.name + '= ?';
         }
-      } else {
+      }else{
         sql += ' WHERE 1=2'; //menh de where sai thi khong cho update Bao toan du lieu
       }
     }
@@ -148,14 +174,14 @@ class SQLiteDAO {
     let i = 0;
     let params = [];
     for (let col of deleteTable.wheres) {
-      if (col.value != undefined && col.value != null) {
+      if (col.value!=undefined&&col.value!=null){
         params.push(col.value);
         if (i++ == 0) {
           sql += ' WHERE ' + col.name + '= ?';
         } else {
           sql += ' AND ' + col.name + '= ?';
         }
-      } else {
+      }else{
         sql += ' WHERE 1=2'; //dam bao khong bi xoa toan bo so lieu khi khai bao sai
       }
     }
@@ -171,19 +197,19 @@ class SQLiteDAO {
     let sql = 'SELECT * FROM ' + selectTable.name;
     let i = 0;
     let params = [];
-    let sqlNames = '';
+    let sqlNames='';
     for (let col of selectTable.cols) {
-      if (i++ == 0) {
-        sqlNames += col.name;
-      } else {
-        sqlNames += ', ' + col.name;
-      }
+        if (i++ == 0) {
+          sqlNames += col.name;
+        } else {
+          sqlNames += ', ' + col.name;
+        }
     }
-    sql = 'SELECT ' + sqlNames + ' FROM ' + selectTable.name;
+    sql = 'SELECT '+sqlNames+' FROM ' + selectTable.name;
     i = 0;
-    if (selectTable.wheres) {
+    if (selectTable.wheres){
       for (let col of selectTable.wheres) {
-        if (col.value != undefined && col.value != null) {
+        if (col.value!=undefined&&col.value!=null){
           params.push(col.value);
           if (i++ == 0) {
             sql += ' WHERE ' + col.name + '= ?';

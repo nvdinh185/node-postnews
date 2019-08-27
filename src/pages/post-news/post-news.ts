@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, ModalController, NavParams, Events } from 'ionic-angular';
+import { NavController, LoadingController, ModalController, NavParams, Events, ViewController } from 'ionic-angular';
 import { NewsService } from '../../services/NewService';
 import { ApiImageService } from '../../services/apiImageService';
 import { DynamicFormWebPage } from '../dynamic-form-web/dynamic-form-web';
@@ -12,15 +12,16 @@ export class PostNewsPage implements OnInit {
   fileImages: any;
   owner: any = 2;
   ownerType = {
-    "1": "public",
-    "2": "friends",
-    "3": "friends of friends",
-    "4": "only me",
+    1: "public",
+    2: "friends",
+    3: "friends of friends",
+    4: "only me",
   }
 
   userInfo: any;
 
   constructor(
+    private viewCtrl: ViewController,
     public navCtrl: NavController,
     public navParams: NavParams,
     private modalCtrl: ModalController,
@@ -32,11 +33,12 @@ export class PostNewsPage implements OnInit {
 
   ngOnInit() {
     this.userInfo = this.navParams.get("userInfo")
-    //console.log(this.userInfo)
+    //this.userInfo = { username: "766777123", fullname: "Nguyen Van Dinh", image: "assets/imgs/avatar.jpg" }
+    console.log(this.userInfo, this.fileImages)
   }
 
   fileChange(event) {
-    if (event.target && event.target.files) {
+    if (event.target.files) {
 
       let size = 480; //default site anh
 
@@ -90,7 +92,6 @@ export class PostNewsPage implements OnInit {
     for (let key in this.ownerType) {
       options.push({ name: this.ownerType[key], value: key })
     }
-
     let form = {
       title: "Tiêu đề của trang"
       , items: [
@@ -115,7 +116,7 @@ export class PostNewsPage implements OnInit {
 
   //callback la ham ma co gia tri res la do page dynamic-form-web tra ve
   callback = (res) => {
-    console.log('Goi logout', res.data);
+    //console.log('Goi logout', res.data);
     this.owner = res.data.owner;
     return Promise.resolve({ next: "CLOSE" });
   }
@@ -130,15 +131,15 @@ export class PostNewsPage implements OnInit {
         form_data.append("share_status", this.owner);
         form_data.append("content", this.content);  //nhap lieu tu text-area
         form_data.append("title", data.title);
-        form_data.append("image", data.image);
+        data.image ? form_data.append("image", data.image) : '';
+        form_data.append("user", this.userInfo.username);  //user post tin;
+
         this.newsService.postNews(form_data)
           .then(data => {
-            console.log('receive form data:', data);
-            this.events.publish('postok');
-            this.navCtrl.pop();
+            this.viewCtrl.dismiss(data)
           })
           .catch(err => {
-            alert("Post không thành công!");
+            this.viewCtrl.dismiss(err)
           })
       })
       .catch(err => {
@@ -147,6 +148,7 @@ export class PostNewsPage implements OnInit {
         form_data.append("share_status", this.owner);
         form_data.append("title", this.content);  //nhap lieu tu text-area
         form_data.append("content", this.content);  //nhap lieu tu text-area
+        form_data.append("user", this.userInfo.username);  //user post tin
 
         if (this.fileImages) {
           this.fileImages.forEach((el, idx) => {
@@ -159,12 +161,10 @@ export class PostNewsPage implements OnInit {
         }
         this.newsService.postNews(form_data)
           .then(data => {
-            console.log('receive form data:', data);
-            this.events.publish('postok');
-            this.navCtrl.pop();
+            this.viewCtrl.dismiss(data)
           })
           .catch(err => {
-            alert("Post không thành công!");
+            this.viewCtrl.dismiss(err)
           })
       })
   }

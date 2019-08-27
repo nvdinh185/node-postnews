@@ -1,3 +1,4 @@
+"use strict"
 const fs = require('fs');
 const mime = require('mime-types');
 const systempath = require('path');
@@ -10,12 +11,17 @@ const db = new SQLiteDAO(dbFile);
 
 class ResourceHandler {
 
+    /**
+     * Lấy file theo đường dẫn
+     * @param {*} req 
+     * @param {*} res 
+     */
     getMediaFile(req, res) {
         let path = req.pathName
         let params = path.substring('/news/db/get-file/'.length);
         let fileRead = params.replace('/', systempath.sep);
         let contentType;
-        console.log(fileRead)
+        //console.log(fileRead)
 
         if (mime.lookup(fileRead)) contentType = mime.lookup(fileRead);
 
@@ -30,224 +36,140 @@ class ResourceHandler {
         });
     }
 
+    /**
+     * Lấy các tin private, tức là các tin có share_status != 1
+     * @param {*} req 
+     * @param {*} res 
+     */
     getPrivateNewsList(req, res) {
-        db.getRsts("select *\
-                    from news\
-                    where user = '"+ (req.paramS && req.paramS.user ? req.paramS.user : req.user && req.user.username ? req.user.username : "123456789") + "'\
-                    and share_status != 1\
+        db.getRsts("select * from news\
+                    where share_status != 1\
                     order by time desc\
                     LIMIT "+ (req.paramS && req.paramS.limit ? req.paramS.limit : 10) + "\
                     OFFSET "+ (req.paramS && req.paramS.offset ? req.paramS.offset : 0) + "\
                     ")
-            .then(results => {
+            .then(async results => {
                 //lay file chi tiet tra cho nhom
-                let detailsPromise = new Promise((resolve, reject) => {
-                    if (!results || results.length === 0) {
-                        resolve();
-                    } else {
-                        let countDetails = 0;
-                        for (let idx = 0; idx < results.length; idx++) {
-                            if (results[idx].news_type == 1) {
-                                //console.log("11")
-                                db.getRsts("select *\
+                if (results.length > 0) {
+                    for (let idx = 0; idx < results.length; idx++) {
+                        if (results[idx].news_type == 1) {
+                            results[idx].medias = await db.getRsts("select *\
                                 from news_files\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else if (results[idx].news_type == 2) {
-                                //console.log("21")
-                                db.getRsts("select *\
-                                from news_shares\
+                        } else if (results[idx].news_type == 2) {
+                            results[idx].medias = await db.getRsts("select *\
+                                from news_share\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else {
-                                //console.log("01")
-                                countDetails++;
-                                if (countDetails == results.length) {
-                                    resolve();
-                                };
-                            }
                         }
                     }
-                })
-                detailsPromise.then(data => {
-                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify(results
-                        , (key, value) => {
-                            if (value === null) { return undefined; }
-                            return value
-                        }
-                    ));
-                })
-                    .catch(err => {
-                        res.writeHead(404, { 'Content-Type': 'text/html' });
-                        res.end(JSON.stringify(err));
-                    })
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify(results
+                    , (key, value) => {
+                        if (value === null) { return undefined; }
+                        return value
+                    }
+                ));
             }).catch(err => {
                 res.writeHead(404, { 'Content-Type': 'text/html' });
                 res.end(JSON.stringify(err));
             })
     }
 
+    /**
+     * Lấy các tin public, tức là các tin có share_status = 1
+     * @param {*} req 
+     * @param {*} res 
+     */
     getPublicNewsList(req, res) {
-        console.log(req.paramS)
-        db.getRsts("select * from news where share_status = 1\
+        //console.log(req.paramS)
+        db.getRsts("select * from news\
+                    where share_status = 1\
                     order by time desc\
                     LIMIT "+ (req.paramS && req.paramS.limit ? req.paramS.limit : 10) + "\
                     OFFSET "+ (req.paramS && req.paramS.offset ? req.paramS.offset : 0))
-            .then(results => {
+            .then(async results => {
                 //lay file chi tiet tra cho nhom
-                let detailsPromise = new Promise((resolve, reject) => {
-                    if (!results || results.length === 0) {
-                        resolve();
-                    } else {
-                        let countDetails = 0;
-                        for (let idx = 0; idx < results.length; idx++) {
-                            if (results[idx].news_type == 1) {
-                                db.getRsts("select *\
+                if (results.length > 0) {
+                    for (let idx = 0; idx < results.length; idx++) {
+                        if (results[idx].news_type == 1) {
+                            results[idx].medias = await db.getRsts("select *\
                                 from news_files\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else if (results[idx].news_type == 2) {
-                                db.getRsts("select *\
-                                from news_shares\
+                        } else if (results[idx].news_type == 2) {
+                            results[idx].medias = await db.getRsts("select *\
+                                from news_share\
                                 where group_id = '"+ results[idx].group_id + "'\
                                 ")
-                                    .then(files => {
-                                        countDetails++;
-                                        results[idx].medias = files;
-                                        if (countDetails == results.length) {
-                                            resolve();
-                                        };
-                                    })
-                                    .catch(err => reject(err))
-                            } else {
-                                countDetails++;
-                                if (countDetails == results.length) {
-                                    resolve();
-                                };
-                            }
                         }
                     }
-                })
-                detailsPromise.then(data => {
-                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify(results
-                        , (key, value) => {
-                            if (value === null) { return undefined; }
-                            return value
-                        }
-                    ));
-                })
-                    .catch(err => {
-                        res.writeHead(404, { 'Content-Type': 'text/html' });
-                        res.end(JSON.stringify(err));
-                    })
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify(results
+                    , (key, value) => {
+                        if (value === null) { return undefined; }
+                        return value
+                    }
+                ));
             }).catch(err => {
                 res.writeHead(404, { 'Content-Type': 'text/html' });
                 res.end(JSON.stringify(err));
             })
     }
 
+    /**
+     * Nhận các tin client post lên, xử lý để lưu vào db
+     * @param {*} req 
+     * @param {*} res 
+     */
     postNewsFiles(req, res) {
-        console.log("req.user.username: ", req.headers['x-access-token'] || req.headers['authorization'])
-        let groupId = "766777123-1558323955188";//req.form_data.params.group_id ? req.form_data.params.group_id : req.user.username + '-' + new Date().getTime();
-        var count_max = req.form_data.params.count_file;
-        let saveDb = new Promise((resolve, reject) => {
-            let sqlInsertGroup = arrObj.convertSqlFromJson(
-                "news",
-                {
-                    group_id: groupId
-                    , content: req.form_data.params.content ? req.form_data.params.content : ""
-                    , news_type: req.form_data.params.image ? 2 : 1
-                    , share_status: req.form_data.params.share_status
-                    , title: req.form_data.params.title
-                    , user: ""//req.user.username
-                    , time: new Date().getTime()
-                }
-            );
-            db.insert(sqlInsertGroup)
-                .then(data => {
-                    resolve(data)
-                    if (req.form_data.params.image) {
-                        let sqlInsertGroup = arrObj.convertSqlFromJson(
-                            "news_shares",
-                            {
-                                group_id: groupId
-                                , url: req.form_data.params.image
-                            }
-                        );
-                        db.insert(sqlInsertGroup)
-                            .then(data => resolve(data))
-                            .catch(err => reject(err))
-                    } else {
-                        if (count_max > 0) {
-                            for (let key in req.form_data.files) {
-                                let sqlInsert = arrObj.convertSqlFromJson(
-                                    "news_files",
-                                    {
-                                        group_id: groupId
-                                        , url: req.form_data.files[key].url
-                                        , user: ""//req.user.username
-                                        , time: new Date().getTime()
-                                    }
-                                    , ["url"]
-                                );
-                                db.insert(sqlInsert)
-                                    .then(data1 => {
-                                        resolve(data1);
-                                    })
-                                    .catch(err => {
-                                        if (err.code === "SQLITE_CONSTRAINT") {
-                                            db.update(sqlInsert)
-                                                .then(data2 => {
-                                                    resolve(data2);
-                                                })
-                                                .catch(err1 => {
-                                                    reject(err1);
-                                                })
-                                        } else {
-                                            reject(err);
-                                        }
-                                    })
-                            }
-                        } else {
-                            resolve("insert news without any file")
-                        }
+        //console.log(req.form_data)
+        let user = req.form_data.params.user;
+        let groupId = user + '-' + Date.now();
+        new Promise(async (resolve, reject) => {
+            let jsonObj = {
+                group_id: groupId
+                , content: req.form_data.params.content
+                , news_type: req.form_data.params.count_image ? 1 : 2
+                , share_status: req.form_data.params.share_status
+                , title: req.form_data.params.title
+                , user: user
+                , time: Date.now()
+            }
+            try {
+                let resultInsert = await db.insert(arrObj.convertSqlFromJson("news", jsonObj));
+                for (let key in req.form_data.files) {
+                    let jsonObj2 = {
+                        group_id: groupId
+                        , url: req.form_data.files[key].url
                     }
-                })
-                .catch(err => reject(err))
+                    resultInsert = await db.insert(arrObj.convertSqlFromJson("news_files", jsonObj2));
+                }
+                if(req.form_data.params.image){
+                    let jsonObj2 = {
+                        group_id: groupId
+                        , url: req.form_data.params.image
+                    }
+                    resultInsert = await db.insert(arrObj.convertSqlFromJson("news_share", jsonObj2));
+                }
+                resolve(resultInsert)
+            } catch (e) {
+                reject(e);
+            }
         })
-        saveDb.then(data => {
-            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-            res.end(JSON.stringify(data));
-        })
+            .then(data => {
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ message: data }));
+            })
             .catch(err => {
-                res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
-                res.end(JSON.stringify({ error: err, message: "error insert db" }));
+                res.writeHead(438, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({
+                    error: err,
+                    message: "Lỗi ghi mới dữ liệu"
+                }));
             })
     }
 }

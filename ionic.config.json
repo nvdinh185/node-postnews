@@ -1,7 +1,5 @@
 {
-  "name": "node-server-media",
-  "integrations": {
-    "cordova": {}
-  },
+  "name": "Bai4List",
+  "integrations": {},
   "type": "ionic-angular"
 }
